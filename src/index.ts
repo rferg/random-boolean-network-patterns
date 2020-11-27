@@ -1,5 +1,7 @@
+import { DrawOptions } from './draw-options'
 import { getRandomInteger } from './get-random-integer'
 import { Network } from './network'
+import { NetworkDrawer } from './network-drawer'
 
 window.onload = () => {
     const canvas = document.getElementById('canvas') as HTMLCanvasElement
@@ -17,33 +19,41 @@ window.onload = () => {
         throw new Error('no context')
     }
 
-    let column = 0
+    let columnX = 0
+    const options: DrawOptions = {
+        startCoordinates: { x: columnX, y: 0 },
+        nodeDimensions: { width: 15, height: 15 },
+        onColor: {
+            red: 27,
+            green: 6,
+            blue: 94,
+            alpha: 255
+        },
+        offColor: {
+            red: 255,
+            green: 71,
+            blue: 218,
+            alpha: 255
+        }
+    }
 
     const network = new Network({
         numberOfEdgesPerNode: 2,
-        numberOfNodes: canvasHeight
+        numberOfNodes: Math.ceil(canvasHeight / options.nodeDimensions.height)
     },
     getRandomInteger)
 
+    const drawer = new NetworkDrawer(canvas)
+
     const drawNetwork = () => {
-        const imageData = ctx.createImageData(1, canvasHeight)
-        const values = network.next()
-        for (let i = 0; i < imageData.height * 4; i += 4) {
-            if (values[Math.floor(i / 4)]) {
-                imageData.data[i] = 255
-                imageData.data[i + 1] = 255
-                imageData.data[i + 2] = 255
-            }
-            imageData.data[i + 3] = 255
-        }
+        drawer.drawNetwork(network.next(), options)
 
-        ctx.putImageData(imageData, column, 0)
-
-        if (column >= canvasWidth) {
-            column = 0
+        if (columnX >= canvasWidth) {
+            columnX = 0
         } else {
-            column++
+            columnX += options.nodeDimensions.width
         }
+        options.startCoordinates.x = columnX
     }
 
     const draw = () => {
