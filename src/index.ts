@@ -20,7 +20,7 @@ window.onload = () => {
     let column = 0
 
     const network = new Network({
-        numberOfEdgesPerNode: 3,
+        numberOfEdgesPerNode: 2,
         numberOfNodes: canvasHeight
     },
     getRandomInteger)

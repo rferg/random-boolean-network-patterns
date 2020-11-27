@@ -8,6 +8,7 @@ export class Network {
     private readonly numberOfEdgesPerNode: number
     private readonly randomGenerator: RandomIntegerGenerator
     private nodes: Node[] = []
+    private inputCombinationCache?: string[]
 
     constructor (
         { numberOfNodes, numberOfEdgesPerNode }: NetworkOptions,
@@ -39,35 +40,32 @@ export class Network {
 
     private start (): boolean[] {
         const values: boolean [] = []
-        const functionTables = this.createBooleanFunctionTables(this.numberOfEdgesPerNode)
         for (let nodeIndex = 0; nodeIndex < this.numberOfNodes; nodeIndex++) {
-            const table = functionTables[this.randomGenerator(0, functionTables.length)]
+            const table = this.getRandomBooleanFunctionTable(this.numberOfEdgesPerNode)
             const edges: number[] = []
             for (let edgeIndex = 0; edgeIndex < this.numberOfEdgesPerNode; edgeIndex++) {
                 edges.push(this.randomGenerator(0, this.numberOfNodes))
             }
-            const initialValue = !!this.randomGenerator(0, 2)
+            const initialValue = this.getRandomBoolean()
             values.push(initialValue)
             this.nodes.push(new Node(initialValue, edges, table))
         }
         return values
     }
 
-    private createBooleanFunctionTables (numberOfInputs: number): BooleanFunctionTable[] {
-        const tables: BooleanFunctionTable[] = []
-        const numberOfTables = this.calculateNumberOfPossibleBooleanFunctions(numberOfInputs)
+    private getRandomBooleanFunctionTable (numberOfInputs: number): BooleanFunctionTable {
+        const table: BooleanFunctionTable = {}
         const inputCombinations = this.getInputCombinations(numberOfInputs)
-        for (let tableIndex = 0; tableIndex < numberOfTables; tableIndex++) {
-            const table: BooleanFunctionTable = {}
-            inputCombinations.forEach((key, rowIndex) => {
-                table[key] = !!(tableIndex & (1 << rowIndex))
-            })
-            tables.push(table)
-        }
-        return tables
+        inputCombinations.forEach(input => {
+            table[input] = this.getRandomBoolean()
+        })
+        return table
     }
 
     private getInputCombinations (numberOfInputs: number): string[] {
+        if (this.inputCombinationCache) {
+            return this.inputCombinationCache
+        }
         const combinations: string[] = []
         const numberOfCombinations = 1 << numberOfInputs // Equal to 1 * 2 ** numberOfInputs
         for (let rowIndex = 0; rowIndex < numberOfCombinations; rowIndex++) {
@@ -77,10 +75,13 @@ export class Network {
             }
             combinations.push(truthValues)
         }
+
+        this.inputCombinationCache = combinations
+
         return combinations
     }
 
-    private calculateNumberOfPossibleBooleanFunctions (numberOfInputs: number): number {
-        return 2 ** (2 ** numberOfInputs)
+    private getRandomBoolean (): boolean {
+        return !!this.randomGenerator(0, 2)
     }
 }
