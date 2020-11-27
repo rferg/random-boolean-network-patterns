@@ -24,21 +24,21 @@ window.onload = () => {
         startCoordinates: { x: columnX, y: 0 },
         nodeDimensions: { width: 15, height: 15 },
         onColor: {
-            red: 27,
-            green: 6,
-            blue: 94,
+            red: getRandomInteger(0, 256),
+            green: getRandomInteger(0, 256),
+            blue: getRandomInteger(0, 256),
             alpha: 255
         },
         offColor: {
-            red: 255,
-            green: 71,
-            blue: 218,
+            red: getRandomInteger(0, 256),
+            green: getRandomInteger(0, 256),
+            blue: getRandomInteger(0, 256),
             alpha: 255
         }
     }
 
     const network = new Network({
-        numberOfEdgesPerNode: 2,
+        numberOfEdgesPerNode: 3,
         numberOfNodes: Math.ceil(canvasHeight / options.nodeDimensions.height)
     },
     getRandomInteger)
