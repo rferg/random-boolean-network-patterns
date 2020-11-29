@@ -1,7 +1,5 @@
-import { DrawOptions } from './ui/draw-options'
-import { getRandomInteger } from './common/get-random-integer'
-import { Network } from './network/network'
-import { NetworkDrawer } from './ui/network-drawer'
+import { getRandomInteger } from './common'
+import { Network, NetworkDrawer, DrawOptions } from './network'
 
 window.onload = () => {
     const canvas = document.getElementById('canvas') as HTMLCanvasElement

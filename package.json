@@ -10,7 +10,11 @@
   },
   "author": "",
   "license": "ISC",
+  "dependencies": {
+    "lit-element": "^2.4.0"
+  },
   "devDependencies": {
+    "@open-wc/testing-helpers": "^1.8.12",
     "@types/jest": "^26.0.15",
     "@typescript-eslint/eslint-plugin": "^4.8.1",
     "@typescript-eslint/parser": "^4.8.1",
