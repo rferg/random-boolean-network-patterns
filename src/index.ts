@@ -1,64 +1,48 @@
 import { getRandomInteger } from './common'
-import { Network, NetworkDrawer, DrawOptions } from './network'
+import { Network, NetworkDrawer, NetworkOptions } from './network'
+import { NetworkService } from './network/network-service'
 
 window.onload = () => {
     const canvas = document.getElementById('canvas') as HTMLCanvasElement
     canvas.height = window.innerHeight
     canvas.width = window.innerWidth
-    const canvasHeight = canvas.height
-    const canvasWidth = canvas.width
 
-    if (!canvas) {
-        throw new Error('Canvas not found')
+    const service = new NetworkService(
+        canvas,
+        (options: NetworkOptions) => new Network(options, getRandomInteger),
+        (cvs: HTMLCanvasElement) => new NetworkDrawer(cvs))
+
+    const nodeDimensions = { width: 15, height: 15 }
+    const onColor = {
+        red: getRandomInteger(0, 256),
+        green: getRandomInteger(0, 256),
+        blue: getRandomInteger(0, 256),
+        alpha: 255
+    }
+    const offColor = {
+        red: getRandomInteger(0, 256),
+        green: getRandomInteger(0, 256),
+        blue: getRandomInteger(0, 256),
+        alpha: 255
     }
 
-    const ctx = canvas.getContext('2d')
-    if (!ctx) {
-        throw new Error('no context')
-    }
-
-    let columnX = 0
-    const options: DrawOptions = {
-        startCoordinates: { x: columnX, y: 0 },
-        nodeDimensions: { width: 15, height: 15 },
-        onColor: {
-            red: getRandomInteger(0, 256),
-            green: getRandomInteger(0, 256),
-            blue: getRandomInteger(0, 256),
-            alpha: 255
-        },
-        offColor: {
-            red: getRandomInteger(0, 256),
-            green: getRandomInteger(0, 256),
-            blue: getRandomInteger(0, 256),
-            alpha: 255
-        }
-    }
-
-    const network = new Network({
+    service.startNew({
         numberOfEdgesPerNode: 3,
-        numberOfNodes: Math.ceil(canvasHeight / options.nodeDimensions.height)
-    },
-    getRandomInteger)
+        onColor,
+        offColor,
+        nodeDimensions
+    })
 
-    const drawer = new NetworkDrawer(canvas)
+    let isRunning = true
 
-    const drawNetwork = () => {
-        drawer.drawNetwork(network.next(), options)
-
-        if (columnX >= canvasWidth) {
-            columnX = 0
-        } else {
-            columnX += options.nodeDimensions.width
+    document.addEventListener('keypress', ({ key }) => {
+        if (key === ' ') {
+            if (isRunning) {
+                service.pauseCurrent()
+            } else {
+                service.resumeCurrent()
+            }
+            isRunning = !isRunning
         }
-        options.startCoordinates.x = columnX
-    }
-
-    const draw = () => {
-        window.requestAnimationFrame(draw)
-
-        drawNetwork()
-    }
-
-    draw()
+    })
 }
