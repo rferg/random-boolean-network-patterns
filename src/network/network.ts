@@ -1,7 +1,7 @@
 import { BooleanFunctionTable } from './boolean-function-table'
 import { NetworkOptions } from './network-options'
 import { Node } from './node'
-import { RandomIntegerGenerator } from './random-integer-generator'
+import { RandomIntegerGenerator } from '../common/random-integer-generator'
 
 export class Network {
     private readonly numberOfNodes: number
