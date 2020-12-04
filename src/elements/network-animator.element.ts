@@ -1,11 +1,29 @@
-import { LitElement, property } from 'lit-element'
+import { css, property } from 'lit-element'
 import { Color, getRandomColor, getRandomInteger } from '../common'
 import { networkServiceFactory, NetworkService } from '../network'
+import { BaseElement } from './base.element'
 
-type Colors = { on: Color, off: Color }
+interface Colors { on: Color, off: Color }
+interface NetworkProperties {
+    colors: Colors
+    nodeSize: number
+    edgesPerNode: number
+}
 
-export class NetworkAnimatorElement extends LitElement {
-    private readonly canvasId = 'networkCanvas'
+export class NetworkAnimatorElement extends BaseElement {
+    static get styles () {
+        return [
+            super.styles,
+            css`
+                canvas {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                }
+            `
+        ]
+    }
+
     private service?: NetworkService
 
     private _isRunning = true
@@ -25,41 +43,20 @@ export class NetworkAnimatorElement extends LitElement {
         }
     }
 
-    private _colors: Colors = { on: getRandomColor(), off: getRandomColor() }
+    private _networkProperties: NetworkProperties = {
+        colors: { on: getRandomColor(), off: getRandomColor() },
+        nodeSize: 15,
+        edgesPerNode: 3
+    }
+
     @property({ attribute: false })
-    get colors (): Colors {
-        return this._colors
+    get networkProperties (): NetworkProperties {
+        return this._networkProperties
     }
 
-    set colors (val: Colors) {
-        if (this._colors !== val) {
-            this._colors = val
-            this.updateNetwork()
-        }
-    }
-
-    private _nodeSize = 15
-    @property({ type: Number })
-    get nodeSize (): number {
-        return this._nodeSize
-    }
-
-    set nodeSize (val: number) {
-        if (this._nodeSize !== val) {
-            this._nodeSize = val
-            this.updateNetwork()
-        }
-    }
-
-    private _edgesPerNode = 3
-    @property({ type: Number })
-    get edgesPerNode (): number {
-        return this._edgesPerNode
-    }
-
-    set edgesPerNode (val: number) {
-        if (this._edgesPerNode !== val) {
-            this._edgesPerNode = val
+    set networkProperties (val: NetworkProperties) {
+        if (this._networkProperties !== val) {
+            this._networkProperties = val
             this.updateNetwork()
         }
     }
@@ -75,10 +72,13 @@ export class NetworkAnimatorElement extends LitElement {
 
     private updateNetwork () {
         this.service && this.service.startNew({
-            onColor: this.colors.on,
-            offColor: this.colors.off,
-            nodeDimensions: { width: this.nodeSize, height: this.nodeSize },
-            numberOfEdgesPerNode: this.edgesPerNode
+            onColor: this.networkProperties.colors.on,
+            offColor: this.networkProperties.colors.off,
+            nodeDimensions: {
+                width: this.networkProperties.nodeSize,
+                height: this.networkProperties.nodeSize
+            },
+            numberOfEdgesPerNode: this.networkProperties.edgesPerNode
         })
     }
 }
