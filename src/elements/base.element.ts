@@ -9,6 +9,9 @@ export class BaseElement extends LitElement {
                 margin: 0;                
                 color: var(--color);
             }
+            *:focus {
+                box-shadow: var(--focus-shadow);
+            }
         `
     }
 }

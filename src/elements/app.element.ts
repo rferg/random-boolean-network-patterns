@@ -58,14 +58,12 @@ export class AppElement extends BaseElement {
     }
 
     private onFormSubmit ({ value }: NetworkFormSubmitEvent) {
-        console.log(value)
         if (value) {
             this.networkProperties = { ...value }
         }
     }
 
     private handleKeyUp ({ key }: KeyboardEvent) {
-        console.log(key)
         if (key === ' ') {
             this.isRunning = !this.isRunning
         }

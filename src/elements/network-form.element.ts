@@ -12,6 +12,9 @@ export class NetworkFormElement extends BaseElement {
         return [
             super.styles,
             css`
+                rbn-container {
+                    border-radius: 0;
+                }
                 form {
                     display: flex;
                     flex-flow: row wrap;
@@ -42,6 +45,18 @@ export class NetworkFormElement extends BaseElement {
                 input[type="color"] {
                     padding: 0;
                     border-bottom: none;
+                }
+                input[type='number'] {
+                    -moz-appearance:textfield;
+                }
+                input[invalid] {
+                    box-shadow: 0px 0px 0px 2px var(--danger-color);
+                    border: 0;
+                }
+
+                input::-webkit-outer-spin-button,
+                input::-webkit-inner-spin-button {
+                    -webkit-appearance: none;
                 }
             `
         ]
@@ -80,14 +95,14 @@ export class NetworkFormElement extends BaseElement {
             <rbn-container>
                 <form>
                     <div class="form-group">
-                        <label for="nodeSize">Node size</label>
+                        <label for="nodeSize">Node size (px)</label>
                         <input type="number"
                             id="nodeSize"
                             value=${(this.formValues && this.formValues.nodeSize) || 1}
                             min="1"
                             max="100"
                             step="1"
-                            @input=${this.onNodeSizeChange}/>
+                            @input=${(e: InputEvent) => this.onNumberChange(e, 'nodeSize')}/>
                     </div>
                     <div class="form-group">
                         <label for="edgesPerNode">Inputs per node</label>
@@ -97,17 +112,17 @@ export class NetworkFormElement extends BaseElement {
                             min="1"
                             max="10"
                             step="1"
-                            @input=${this.onEdgesChange}/>
+                            @input=${(e: InputEvent) => this.onNumberChange(e, 'edgesPerNode')}/>
                     </div>
                     <div class="form-group">
-                        <label for="onColor">1 Color</label>
+                        <label for="onColor">Color 1</label>
                         <input type="color"
                             id="onColor"
                             value="${convertRgbToHex(this.formValues.colors.on)}"
                             @input=${(e: InputEvent) => this.onColorChange(e, 'on')} />
                     </div>
                     <div class="form-group">
-                        <label for="offColor">0 Color</label>
+                        <label for="offColor">Color 0</label>
                         <input type="color"
                             id="offColor"
                             value="${convertRgbToHex(this.formValues.colors.off)}"
@@ -118,33 +133,34 @@ export class NetworkFormElement extends BaseElement {
         `
     }
 
-    private onNodeSizeChange (e: InputEvent) {
-        const value = (e.target as HTMLInputElement)?.value
-        this.formValues = {
-            ...this.formValues,
-            nodeSize: this.getValidNumber(value, 1, 100)
+    private parseNumberInput (input: string | null, min: number, max: number): { isValid: boolean, value?: number } {
+        if (!input) { return { isValid: false } }
+        const value = Number.parseFloat(input)
+        if (!Number.isInteger(value)) { return { isValid: false } }
+
+        if (min > value || value > max) { return { isValid: false } }
+        return { isValid: true, value }
+    }
+
+    private onNumberChange ({ target }: InputEvent, key: 'edgesPerNode' | 'nodeSize') {
+        const el = target as HTMLInputElement
+        const inputValue = el?.value
+        const max = key === 'edgesPerNode' ? 10 : 100
+        const { isValid, value } = this.parseNumberInput(inputValue, 1, max)
+        if (isValid && value !== null && value !== undefined) {
+            this.formValues = {
+                ...this.formValues,
+                [key]: value
+            }
+            this.submitChange()
+            el.removeAttribute('invalid')
+        } else {
+            el.setAttribute('invalid', '')
         }
-        this.submitChange()
     }
 
-    private onEdgesChange (e: InputEvent) {
-        const value = (e.target as HTMLInputElement)?.value
-        this.formValues = {
-            ...this.formValues,
-            edgesPerNode: this.getValidNumber(value, 1, 10)
-        }
-        this.submitChange()
-    }
-
-    private getValidNumber (input: string | null, min: number, max: number): number {
-        const parsed = Number.parseInt(input || '0', 10) || 0
-        return Math.floor(
-            Math.max(Math.min(parsed, max), min)
-        )
-    }
-
-    private onColorChange (e: InputEvent, key: 'on' | 'off') {
-        const value = convertHexToRgb((e.target as HTMLInputElement)?.value)
+    private onColorChange ({ target }: InputEvent, key: 'on' | 'off') {
+        const value = convertHexToRgb((target as HTMLInputElement)?.value)
         this.formValues = {
             ...this.formValues,
             colors: {
