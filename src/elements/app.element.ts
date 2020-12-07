@@ -15,11 +15,11 @@ export class AppElement extends BaseElement {
                     min-height: 100vh;
                 }
                 rbn-network-form {
-                    position: absolute;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -50%);
+                    position: fixed;
+                    top: 0;
+                    left: 0;
                     z-index: 1;
+                    width: 100%;
                 }
             `
         ]

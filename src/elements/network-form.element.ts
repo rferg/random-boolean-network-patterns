@@ -14,21 +14,21 @@ export class NetworkFormElement extends BaseElement {
             css`
                 form {
                     display: flex;
-                    flex-flow: column nowrap;
-                    justify-content: center;
+                    flex-flow: row wrap;
+                    justify-content: space-between;
                     align-items: center;
                     width: 100%;
-                }
-                form > * {
-                    width: 100%;
-                    flex: 1;
-                    margin: 0.5rem 0;
-                }
+                }                
                 .form-group {
                     display: flex;
-                    flex-flow: row wrap;
+                    flex-flow: row nowrap;
                     align-items: center;
                     justify-content: space-between;
+                    min-width: 150px;
+                    margin: 0.5rem;
+                }
+                .form-group label {
+                    margin-right: 1rem;
                 }
                 input {
                     outline: 0;
@@ -36,7 +36,12 @@ export class NetworkFormElement extends BaseElement {
                     background-color: transparent;
                     border-bottom: 0.1rem solid var(--color);
                     text-align: center;
-                    padding: 0.25rem 0.5rem;
+                    padding: var(--padding);
+                    font-size: var(--font-size);
+                }
+                input[type="color"] {
+                    padding: 0;
+                    border-bottom: none;
                 }
             `
         ]
@@ -108,10 +113,6 @@ export class NetworkFormElement extends BaseElement {
                             value="${convertRgbToHex(this.formValues.colors.off)}"
                             @input=${(e: InputEvent) => this.onColorChange(e, 'off')} />
                     </div>
-                    <div class="buttons-container">
-                        <rbn-button buttonRole="danger" @click=${this.onCancel}>Cancel</rbn-button>
-                        <rbn-button @click=${this.onSubmit}>New</rbn-button>
-                    </div>
                 </form>
             </rbn-container>
         `
@@ -123,6 +124,7 @@ export class NetworkFormElement extends BaseElement {
             ...this.formValues,
             nodeSize: this.getValidNumber(value, 1, 100)
         }
+        this.submitChange()
     }
 
     private onEdgesChange (e: InputEvent) {
@@ -131,6 +133,7 @@ export class NetworkFormElement extends BaseElement {
             ...this.formValues,
             edgesPerNode: this.getValidNumber(value, 1, 10)
         }
+        this.submitChange()
     }
 
     private getValidNumber (input: string | null, min: number, max: number): number {
@@ -149,13 +152,10 @@ export class NetworkFormElement extends BaseElement {
                 [key]: { ...value, alpha: 255 }
             }
         }
+        this.submitChange()
     }
 
-    private onCancel () {
-        this.formValues = { ...(this.networkProperties || this.defaultFormValues) }
-    }
-
-    private onSubmit () {
+    private submitChange () {
         this.dispatchEvent(new NetworkFormSubmitEvent(this.formValues))
     }
 }
