@@ -1,7 +1,7 @@
 import { css, html, internalProperty, property } from 'lit-element'
 import { NetworkInputProperties } from '../common'
 import { convertHexToRgb } from '../common/convert-hex-to-rgb'
-import { converRgbToHex } from '../common/convert-rgb-to-hex'
+import { convertRgbToHex } from '../common/convert-rgb-to-hex'
 import { BaseElement } from './base.element'
 import { NetworkFormSubmitEvent } from './network-form-submit.event'
 
@@ -98,14 +98,14 @@ export class NetworkFormElement extends BaseElement {
                         <label for="onColor">1 Color</label>
                         <input type="color"
                             id="onColor"
-                            value="${converRgbToHex(this.formValues.colors.on)}"
+                            value="${convertRgbToHex(this.formValues.colors.on)}"
                             @input=${(e: InputEvent) => this.onColorChange(e, 'on')} />
                     </div>
                     <div class="form-group">
                         <label for="offColor">0 Color</label>
                         <input type="color"
                             id="offColor"
-                            value="${converRgbToHex(this.formValues.colors.off)}"
+                            value="${convertRgbToHex(this.formValues.colors.off)}"
                             @input=${(e: InputEvent) => this.onColorChange(e, 'off')} />
                     </div>
                     <div class="buttons-container">
@@ -140,8 +140,8 @@ export class NetworkFormElement extends BaseElement {
         )
     }
 
-    private onColorChange ({ data }: InputEvent, key: 'on' | 'off') {
-        const value = convertHexToRgb(data || '')
+    private onColorChange (e: InputEvent, key: 'on' | 'off') {
+        const value = convertHexToRgb((e.target as HTMLInputElement)?.value)
         this.formValues = {
             ...this.formValues,
             colors: {
