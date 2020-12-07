@@ -13,6 +13,25 @@
                 "Liberation Mono",
                 "Courier New",
                 monospace;
+            --font-size: 1.35rem;
+            --line-height: 1.65;
+            --regular-weight: 400;
+            --bold-weight: 800;
+
+            --primary-color: #0D3044;
+            --light-primary-color: #76BCE5;
+            --danger-color: #E27883;
+            --white: #FAFAFA;
+
+            --container-background-color: rgba(0,0,10,0.8);
+            --color: var(--white);
+            --box-shadow: 1px 2px 4px 8px rgba(0,0,10,0.2);
+            --focus-shadow: 0px 0px 0px 2px var(----light-primary-color);
+            
+            --easing: cubic-bezier(0.61, 1, 0.88, 1);
+            --animation-duration: 250ms;
+            --border-radius: 0.25rem;
+            --padding: 1rem;
         }
         * {
             box-sizing: border-box;
@@ -24,6 +43,16 @@
             height: 100%;
             margin: 0;
             padding: 0;
+        }
+        html {
+            -webkit-text-size-adjust: 100%;
+            font-size: 100%;
+        }
+        body {
+            font-size: var(--font-size);
+            line-height: var(--line-height);
+            font-weight: var(--regular-weight);
+            font-family: var(--font-family);
         }
     </style>
 </head>

@@ -1,4 +1,6 @@
 export { Color } from './color'
+export { Colors } from './colors'
 export { getRandomColor } from './get-random-color'
 export { getRandomInteger } from './get-random-integer'
+export { NetworkInputProperties } from './network-input-properties'
 export { RandomIntegerGenerator } from './random-integer-generator'

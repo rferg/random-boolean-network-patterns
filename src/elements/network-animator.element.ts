@@ -1,16 +1,11 @@
 import { css, property } from 'lit-element'
-import { Color, getRandomColor, getRandomInteger } from '../common'
+import { getRandomColor, getRandomInteger, NetworkInputProperties } from '../common'
 import { networkServiceFactory, NetworkService } from '../network'
 import { BaseElement } from './base.element'
 
-interface Colors { on: Color, off: Color }
-interface NetworkProperties {
-    colors: Colors
-    nodeSize: number
-    edgesPerNode: number
-}
-
 export class NetworkAnimatorElement extends BaseElement {
+    static get is () { return 'rbn-network-animator' }
+
     static get styles () {
         return [
             super.styles,
@@ -43,18 +38,18 @@ export class NetworkAnimatorElement extends BaseElement {
         }
     }
 
-    private _networkProperties: NetworkProperties = {
+    private _networkProperties: NetworkInputProperties = {
         colors: { on: getRandomColor(), off: getRandomColor() },
         nodeSize: 15,
         edgesPerNode: 3
     }
 
     @property({ attribute: false })
-    get networkProperties (): NetworkProperties {
+    get networkProperties (): NetworkInputProperties {
         return this._networkProperties
     }
 
-    set networkProperties (val: NetworkProperties) {
+    set networkProperties (val: NetworkInputProperties) {
         if (this._networkProperties !== val) {
             this._networkProperties = val
             this.updateNetwork()

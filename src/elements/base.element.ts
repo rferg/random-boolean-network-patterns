@@ -6,8 +6,8 @@ export class BaseElement extends LitElement {
             :host, * {
                 box-sizing: border-box;
                 font-family: var(--font-family);
-                margin: 0;
-                padding: 0;
+                margin: 0;                
+                color: var(--color);
             }
         `
     }
