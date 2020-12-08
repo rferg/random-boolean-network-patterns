@@ -1,6 +1,7 @@
 import { css, html, property } from 'lit-element'
-import { getRandomColor, NetworkInputProperties } from '../common'
+import { Colors, getRandomColor, NetworkInputProperties } from '../common'
 import { BaseElement } from './base.element'
+import { ColorsChangeEvent } from './colors-change.event'
 import { NetworkFormSubmitEvent } from './network-form-submit.event'
 
 export class AppElement extends BaseElement {
@@ -27,31 +28,26 @@ export class AppElement extends BaseElement {
 
     @property({ attribute: false })
     networkProperties: NetworkInputProperties = {
-        colors: { on: getRandomColor(), off: getRandomColor() },
         nodeSize: 15,
         edgesPerNode: 3
     }
 
     @property({ attribute: false })
+    colors: Colors = { on: getRandomColor(), off: getRandomColor() }
+
+    @property({ attribute: false })
     isRunning = true
-
-    connectedCallback () {
-        super.connectedCallback()
-        this.addEventListener('keyup', this.handleKeyUp)
-    }
-
-    disconnectedCallback () {
-        super.disconnectedCallback()
-        this.removeEventListener('keyup', this.handleKeyUp)
-    }
 
     render () {
         return html`
             <rbn-network-form
                 .networkProperties=${this.networkProperties}
-                @network-form-submit=${this.onFormSubmit}></rbn-network-form>
+                .colors=${this.colors}
+                @network-form-submit=${this.onFormSubmit}
+                @colors-change=${this.onColorsChange}></rbn-network-form>
             <rbn-network-animator
                 isRunning=${this.isRunning}
+                .colors=${this.colors}
                 .networkProperties=${this.networkProperties}>
             </rbn-network-animator>
             `
@@ -63,9 +59,7 @@ export class AppElement extends BaseElement {
         }
     }
 
-    private handleKeyUp ({ key }: KeyboardEvent) {
-        if (key === ' ') {
-            this.isRunning = !this.isRunning
-        }
+    private onColorsChange ({ colors }: ColorsChangeEvent) {
+        this.colors = colors
     }
 }

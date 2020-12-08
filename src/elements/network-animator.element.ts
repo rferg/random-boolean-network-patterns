@@ -1,5 +1,5 @@
 import { css, property } from 'lit-element'
-import { getRandomColor, getRandomInteger, NetworkInputProperties } from '../common'
+import { Colors, getRandomColor, getRandomInteger, NetworkInputProperties } from '../common'
 import { networkServiceFactory, NetworkService } from '../network'
 import { BaseElement } from './base.element'
 
@@ -20,6 +20,7 @@ export class NetworkAnimatorElement extends BaseElement {
     }
 
     private service?: NetworkService
+    private hasStarted = false
 
     private _isRunning = true
     @property({ type: Boolean })
@@ -39,7 +40,6 @@ export class NetworkAnimatorElement extends BaseElement {
     }
 
     private _networkProperties: NetworkInputProperties = {
-        colors: { on: getRandomColor(), off: getRandomColor() },
         nodeSize: 15,
         edgesPerNode: 3
     }
@@ -56,6 +56,22 @@ export class NetworkAnimatorElement extends BaseElement {
         }
     }
 
+    private _colors: Colors = { on: getRandomColor(), off: getRandomColor() }
+
+    @property({ attribute: false })
+    get colors (): Colors {
+        return this._colors
+    }
+
+    set colors (val: Colors) {
+        if (val !== this._colors) {
+            this._colors = val
+            if (this.hasStarted && this.service) {
+                this.service.changeColors(this._colors)
+            }
+        }
+    }
+
     connectedCallback () {
         const canvas: HTMLCanvasElement = document.createElement('canvas')
         this.shadowRoot?.appendChild(canvas)
@@ -63,17 +79,21 @@ export class NetworkAnimatorElement extends BaseElement {
         canvas.width = window.innerWidth
         this.service = networkServiceFactory(canvas, getRandomInteger)
         this.updateNetwork()
+        this.hasStarted = true
     }
 
     private updateNetwork () {
-        this.service && this.service.startNew({
-            onColor: this.networkProperties.colors.on,
-            offColor: this.networkProperties.colors.off,
-            nodeDimensions: {
-                width: this.networkProperties.nodeSize,
-                height: this.networkProperties.nodeSize
-            },
-            numberOfEdgesPerNode: this.networkProperties.edgesPerNode
-        })
+        if (this.service) {
+            this.service.startNew({
+                onColor: this.colors.on,
+                offColor: this.colors.off,
+                nodeDimensions: {
+                    width: this.networkProperties.nodeSize,
+                    height: this.networkProperties.nodeSize
+                },
+                numberOfEdgesPerNode: this.networkProperties.edgesPerNode
+            })
+            this.hasStarted = true
+        }
     }
 }

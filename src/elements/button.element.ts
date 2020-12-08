@@ -14,7 +14,7 @@ export class ButtonElement extends BaseElement {
                 :host([buttonRole="danger"]) button {
                     background-color: var(--danger-color);
                 }
-                :host([diabled]) button {
+                :host([disabled]) button {
                     opacity: 0.5;
                     cursor: not-allowed;
                 }

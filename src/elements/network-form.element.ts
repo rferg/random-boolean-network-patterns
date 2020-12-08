@@ -1,10 +1,12 @@
 import { css, html, internalProperty, property } from 'lit-element'
-import { NetworkInputProperties } from '../common'
+import { Colors, NetworkInputProperties } from '../common'
 import { convertHexToRgb } from '../common/convert-hex-to-rgb'
 import { convertRgbToHex } from '../common/convert-rgb-to-hex'
 import { BaseElement } from './base.element'
+import { ColorsChangeEvent } from './colors-change.event'
 import { NetworkFormSubmitEvent } from './network-form-submit.event'
 
+type NetworkForm = NetworkInputProperties & Colors
 export class NetworkFormElement extends BaseElement {
     static get is () { return 'rbn-network-form' }
 
@@ -62,13 +64,11 @@ export class NetworkFormElement extends BaseElement {
         ]
     }
 
-    private readonly defaultFormValues: NetworkInputProperties = {
+    private readonly defaultFormValues: NetworkForm = {
         nodeSize: 1,
         edgesPerNode: 1,
-        colors: {
-            on: { red: 0, green: 0, blue: 0, alpha: 0 },
-            off: { red: 0, green: 0, blue: 0, alpha: 0 }
-        }
+        on: { red: 0, green: 0, blue: 0, alpha: 0 },
+        off: { red: 0, green: 0, blue: 0, alpha: 0 }
     }
 
     private _networkProperties?: NetworkInputProperties
@@ -82,13 +82,29 @@ export class NetworkFormElement extends BaseElement {
         if (this._networkProperties !== val) {
             this._networkProperties = val
             if (this._networkProperties) {
-                this.formValues = { ...this._networkProperties }
+                this.formValues = { ...this.formValues, ...this._networkProperties }
+            }
+        }
+    }
+
+    private _colors?: Colors
+
+    @property()
+    get colors (): Colors | undefined {
+        return this._colors
+    }
+
+    set colors (val: Colors | undefined) {
+        if (this._colors !== val) {
+            this._colors = val
+            if (this._colors) {
+                this.formValues = { ...this.formValues, ...this._colors }
             }
         }
     }
 
     @internalProperty()
-    private formValues: NetworkInputProperties = this.defaultFormValues
+    private formValues: NetworkForm = this.defaultFormValues
 
     render () {
         return html`
@@ -118,14 +134,14 @@ export class NetworkFormElement extends BaseElement {
                         <label for="onColor">Color 1</label>
                         <input type="color"
                             id="onColor"
-                            value="${convertRgbToHex(this.formValues.colors.on)}"
+                            value="${convertRgbToHex(this.formValues.on)}"
                             @input=${(e: InputEvent) => this.onColorChange(e, 'on')} />
                     </div>
                     <div class="form-group">
                         <label for="offColor">Color 0</label>
                         <input type="color"
                             id="offColor"
-                            value="${convertRgbToHex(this.formValues.colors.off)}"
+                            value="${convertRgbToHex(this.formValues.off)}"
                             @input=${(e: InputEvent) => this.onColorChange(e, 'off')} />
                     </div>
                 </form>
@@ -152,7 +168,7 @@ export class NetworkFormElement extends BaseElement {
                 ...this.formValues,
                 [key]: value
             }
-            this.submitChange()
+            this.submitNetworkChange()
             el.removeAttribute('invalid')
         } else {
             el.setAttribute('invalid', '')
@@ -163,15 +179,16 @@ export class NetworkFormElement extends BaseElement {
         const value = convertHexToRgb((target as HTMLInputElement)?.value)
         this.formValues = {
             ...this.formValues,
-            colors: {
-                ...this.formValues.colors,
-                [key]: { ...value, alpha: 255 }
-            }
+            [key]: { ...value, alpha: 255 }
         }
-        this.submitChange()
+        this.submitColorsChange()
     }
 
-    private submitChange () {
+    private submitNetworkChange () {
         this.dispatchEvent(new NetworkFormSubmitEvent(this.formValues))
+    }
+
+    private submitColorsChange () {
+        this.dispatchEvent(new ColorsChangeEvent(this.formValues))
     }
 }

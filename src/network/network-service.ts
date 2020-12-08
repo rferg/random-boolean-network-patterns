@@ -1,4 +1,4 @@
-import { Color } from '../common'
+import { Color, Colors } from '../common'
 import { DrawOptions } from './draw-options'
 import { Network } from './network'
 import { NetworkDrawer } from './network-drawer'
@@ -47,6 +47,14 @@ export class NetworkService {
         }
 
         this.resumeCurrent()
+    }
+
+    changeColors ({ on, off }: Colors): void {
+        if (!this.currentDrawOptions) {
+            throw new Error('Attempted to change network colors before being initialized.')
+        }
+        this.currentDrawOptions.onColor = on
+        this.currentDrawOptions.offColor = off
     }
 
     resumeCurrent (): void {
