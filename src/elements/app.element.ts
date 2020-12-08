@@ -15,7 +15,23 @@ export class AppElement extends BaseElement {
                     display: block;
                     min-height: 100vh;
                 }
-                rbn-container {
+                #focusTarget {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    min-height: 33vh;
+                    width: 100%;
+                    background-color: transparent;
+                    z-index: 1;
+                    outline: 0;
+                    border: 0;
+                }
+                #focusTarget:focus {
+                    outline: 0;
+                    border: 0;
+                    box-shadow: none;
+                }
+                #focusTarget rbn-container {
                     border-radius: 0;
                     position: fixed;
                     top: 0;
@@ -24,6 +40,12 @@ export class AppElement extends BaseElement {
                     width: 100%;
                     box-shadow: var(--box-shadow);
                     align-items: center;
+                    transform: translateY(-105%);
+                    transition: transform var(--animation-duration) var(--easing) var(--animation-duration);
+                }
+                #focusTarget:hover rbn-container,
+                #focusTarget:focus-within rbn-container {
+                    transform: translateY(0);
                 }
                 rbn-network-form {
                     width: 100%;
@@ -47,17 +69,19 @@ export class AppElement extends BaseElement {
 
     render () {
         return html`
-            <rbn-container>
-                <rbn-network-form
-                    .networkProperties=${this.networkProperties}
-                    .colors=${this.colors}
-                    @network-form-submit=${this.onFormSubmit}
-                    @colors-change=${this.onColorsChange}></rbn-network-form>
-                <rbn-network-actions
-                    .isRunning=${this.isRunning}
-                    @generate-network=${this.generateNewNetwork}
-                    @running-change=${this.handleRunningChange}></rbn-network-actions>
-            </rbn-container>
+            <div id="focusTarget" tabindex="0">
+                <rbn-container>
+                    <rbn-network-form
+                        .networkProperties=${this.networkProperties}
+                        .colors=${this.colors}
+                        @network-form-submit=${this.onFormSubmit}
+                        @colors-change=${this.onColorsChange}></rbn-network-form>
+                    <rbn-network-actions
+                        .isRunning=${this.isRunning}
+                        @generate-network=${this.generateNewNetwork}
+                        @running-change=${this.handleRunningChange}></rbn-network-actions>
+                </rbn-container>
+            </div>
             <rbn-network-animator
                 .isRunning=${this.isRunning}
                 .colors=${this.colors}
@@ -69,6 +93,7 @@ export class AppElement extends BaseElement {
     private onFormSubmit ({ value }: NetworkFormSubmitEvent) {
         if (value) {
             this.networkProperties = { ...value }
+            this.isRunning = true
         }
     }
 
@@ -78,6 +103,7 @@ export class AppElement extends BaseElement {
 
     private generateNewNetwork () {
         this.networkProperties = { ...this.networkProperties }
+        this.isRunning = true
     }
 
     private handleRunningChange ({ detail: isRunning }: CustomEvent<boolean>) {

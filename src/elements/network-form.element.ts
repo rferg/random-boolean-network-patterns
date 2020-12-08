@@ -38,7 +38,7 @@ export class NetworkFormElement extends BaseElement {
                     background-color: transparent;
                     border-bottom: 0.1rem solid var(--color);
                     text-align: center;
-                    padding: var(--padding);
+                    padding: calc(var(--padding) / 2) var(--padding);
                     font-size: var(--font-size);
                 }
                 input[type="color"] {
