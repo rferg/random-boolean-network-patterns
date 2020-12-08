@@ -13,10 +13,7 @@ export class NetworkFormElement extends BaseElement {
     static get styles () {
         return [
             super.styles,
-            css`
-                rbn-container {
-                    border-radius: 0;
-                }
+            css`                
                 form {
                     display: flex;
                     flex-flow: row wrap;
@@ -108,7 +105,6 @@ export class NetworkFormElement extends BaseElement {
 
     render () {
         return html`
-            <rbn-container>
                 <form>
                     <div class="form-group">
                         <label for="nodeSize">Node size (px)</label>
@@ -145,7 +141,6 @@ export class NetworkFormElement extends BaseElement {
                             @input=${(e: InputEvent) => this.onColorChange(e, 'off')} />
                     </div>
                 </form>
-            </rbn-container>
         `
     }
 

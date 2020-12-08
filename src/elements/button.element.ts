@@ -14,6 +14,9 @@ export class ButtonElement extends BaseElement {
                 :host([buttonRole="danger"]) button {
                     background-color: var(--danger-color);
                 }
+                :host([buttonRole="success"]) button {
+                    background-color: var(--success-color);
+                }
                 :host([disabled]) button {
                     opacity: 0.5;
                     cursor: not-allowed;
@@ -24,34 +27,48 @@ export class ButtonElement extends BaseElement {
                     background-color: var(--primary-color);
                     padding: var(--padding);
                     outline: none;
-                    border: none;
-                    transition: opacity var(--animation-duration) var(--easing);
+                    border: 0.15rem solid transparent;
+                    transition: opacity var(--animation-duration) var(--easing),
+                        border-color var(--animation-duration) var(--easing),
+                        background-color var(--animation-duration) var(--easing);
                     font-weight: var(--bold-weight);
                     border-radius: var(--border-radius);
                     font-size: var(--font-size);
                     cursor: pointer;
                 }
                 button:hover {
-                    opacity: 0.5;
+                    opacity: 0.7;
                 }
                 button:focus {
-                    box-shadow: var(--focus-shadow);
+                    box-shadow: none;
+                    border-color: var(--light-primary);
                 }
             `
         ]
     }
 
     @property({ type: String })
-    buttonRole: 'primary' | 'danger' = 'primary'
+    buttonRole: 'primary' | 'danger' | 'success' = 'primary'
 
     @property({ type: Boolean })
     disabled = false
 
     render () {
         return html`
-            <button type="button" ?disabled=${this.disabled}>
+            <button type="button"
+                @click=${this.handleClick}
+                ?disabled=${this.disabled}>
                 <slot></slot>
             </button>
         `
+    }
+
+    handleClick ({ currentTarget, detail }: MouseEvent) {
+        // Remove focus from button when clicked, but not when
+        // "Enter" key is hit.  Detail is 1 if mouse click and
+        // 0 if keypress.
+        if (detail && currentTarget && !this.disabled) {
+            (currentTarget as HTMLButtonElement).blur()
+        }
     }
 }

@@ -15,12 +15,19 @@ export class AppElement extends BaseElement {
                     display: block;
                     min-height: 100vh;
                 }
-                rbn-network-form {
+                rbn-container {
+                    border-radius: 0;
                     position: fixed;
                     top: 0;
                     left: 0;
                     z-index: 1;
                     width: 100%;
+                    box-shadow: var(--box-shadow);
+                    align-items: center;
+                }
+                rbn-network-form {
+                    width: 100%;
+                    margin-bottom: 1rem;
                 }
             `
         ]
@@ -40,13 +47,19 @@ export class AppElement extends BaseElement {
 
     render () {
         return html`
-            <rbn-network-form
-                .networkProperties=${this.networkProperties}
-                .colors=${this.colors}
-                @network-form-submit=${this.onFormSubmit}
-                @colors-change=${this.onColorsChange}></rbn-network-form>
+            <rbn-container>
+                <rbn-network-form
+                    .networkProperties=${this.networkProperties}
+                    .colors=${this.colors}
+                    @network-form-submit=${this.onFormSubmit}
+                    @colors-change=${this.onColorsChange}></rbn-network-form>
+                <rbn-network-actions
+                    .isRunning=${this.isRunning}
+                    @generate-network=${this.generateNewNetwork}
+                    @running-change=${this.handleRunningChange}></rbn-network-actions>
+            </rbn-container>
             <rbn-network-animator
-                isRunning=${this.isRunning}
+                .isRunning=${this.isRunning}
                 .colors=${this.colors}
                 .networkProperties=${this.networkProperties}>
             </rbn-network-animator>
@@ -61,5 +74,13 @@ export class AppElement extends BaseElement {
 
     private onColorsChange ({ colors }: ColorsChangeEvent) {
         this.colors = colors
+    }
+
+    private generateNewNetwork () {
+        this.networkProperties = { ...this.networkProperties }
+    }
+
+    private handleRunningChange ({ detail: isRunning }: CustomEvent<boolean>) {
+        this.isRunning = isRunning
     }
 }

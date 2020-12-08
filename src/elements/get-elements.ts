@@ -1,6 +1,7 @@
 import { AppElement } from './app.element'
 import { ButtonElement } from './button.element'
 import { ContainerElement } from './container.element'
+import { NetworkActionsElement } from './network-actions.element'
 import { NetworkAnimatorElement } from './network-animator.element'
 import { NetworkFormElement } from './network-form.element'
 
@@ -17,6 +18,7 @@ export function getElements (): {
         { name: NetworkAnimatorElement.is, constructor: NetworkAnimatorElement },
         { name: ContainerElement.is, constructor: ContainerElement },
         { name: ButtonElement.is, constructor: ButtonElement },
-        { name: NetworkFormElement.is, constructor: NetworkFormElement }
+        { name: NetworkFormElement.is, constructor: NetworkFormElement },
+        { name: NetworkActionsElement.is, constructor: NetworkActionsElement }
     ]
 }
