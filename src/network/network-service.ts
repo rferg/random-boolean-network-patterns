@@ -66,9 +66,8 @@ export class NetworkService {
             throw new Error('Draw options were not initialized before attempting to draw.')
         }
 
-        const canvasWidth = this.canvas.width
-
         const draw = () => {
+            const canvasWidth = this.canvas.width
             this.currentRequestId = window.requestAnimationFrame(draw)
             if (this.network && this.currentDrawOptions) {
                 this.drawNetwork(this.network, this.drawer, this.currentDrawOptions, canvasWidth)

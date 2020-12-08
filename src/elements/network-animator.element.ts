@@ -21,6 +21,7 @@ export class NetworkAnimatorElement extends BaseElement {
 
     private service?: NetworkService
     private hasStarted = false
+    private canvas?: HTMLCanvasElement
 
     private _isRunning = true
     @property({ type: Boolean })
@@ -72,14 +73,24 @@ export class NetworkAnimatorElement extends BaseElement {
         }
     }
 
+    constructor () {
+        super()
+        this.handleWindowResize = this.handleWindowResize.bind(this)
+    }
+
     connectedCallback () {
-        const canvas: HTMLCanvasElement = document.createElement('canvas')
-        this.shadowRoot?.appendChild(canvas)
-        canvas.height = window.innerHeight
-        canvas.width = window.innerWidth
-        this.service = networkServiceFactory(canvas, getRandomInteger)
+        this.canvas = document.createElement('canvas')
+        this.shadowRoot?.appendChild(this.canvas)
+        this.setCanvasToWindowSize()
+        this.service = networkServiceFactory(this.canvas, getRandomInteger)
         this.updateNetwork()
         this.hasStarted = true
+
+        window.addEventListener('resize', this.handleWindowResize)
+    }
+
+    disconnectedCallback () {
+        window.removeEventListener('resize', this.handleWindowResize)
     }
 
     private updateNetwork () {
@@ -95,5 +106,16 @@ export class NetworkAnimatorElement extends BaseElement {
             })
             this.hasStarted = true
         }
+    }
+
+    private setCanvasToWindowSize () {
+        if (this.canvas) {
+            this.canvas.height = window.innerHeight
+            this.canvas.width = window.innerWidth
+        }
+    }
+
+    private handleWindowResize () {
+        this.setCanvasToWindowSize()
     }
 }
