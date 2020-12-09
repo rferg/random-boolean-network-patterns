@@ -52,6 +52,16 @@ export class AppElement extends BaseElement {
                     width: 100%;
                     margin-bottom: 1rem;
                 }
+
+                .actions-container {
+                    display: flex;
+                    flex-flow: row wrap;
+                    align-items: center;
+                    justify-content: center;
+                }
+                rbn-canvas-image-downloader {
+                    margin: 0.5rem;
+                }
             `
         ]
     }
@@ -80,12 +90,14 @@ export class AppElement extends BaseElement {
                         .colors=${this.colors}
                         @network-form-submit=${this.onFormSubmit}
                         @colors-change=${this.onColorsChange}></rbn-network-form>
-                    <rbn-canvas-image-downloader .canvasDataUrlFetcher=${this.canvasDataUrlFetcher}>
-                    </rbn-canvas-image-downloader>
-                    <rbn-network-actions
-                        .isRunning=${this.isRunning}
-                        @generate-network=${this.generateNewNetwork}
-                        @running-change=${this.handleRunningChange}></rbn-network-actions>
+                    <div class="actions-container">                            
+                        <rbn-canvas-image-downloader .canvasDataUrlFetcher=${this.canvasDataUrlFetcher}>
+                        </rbn-canvas-image-downloader>
+                        <rbn-network-actions
+                            .isRunning=${this.isRunning}
+                            @generate-network=${this.generateNewNetwork}
+                            @running-change=${this.handleRunningChange}></rbn-network-actions>
+                    </div>
                 </rbn-container>
             </div>
             <rbn-network-animator

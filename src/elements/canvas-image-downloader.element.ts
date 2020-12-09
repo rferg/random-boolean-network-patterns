@@ -1,5 +1,6 @@
 import { css, html, internalProperty, property, query } from 'lit-element'
 import { BaseElement } from './base.element'
+import { Icon } from './icon'
 
 export class CanvasImageDownloaderElement extends BaseElement {
     static get is (): string { return 'rbn-canvas-image-downloader' }
@@ -29,9 +30,9 @@ export class CanvasImageDownloaderElement extends BaseElement {
             <a id="downloadLink" download="rbnpattern.png" href="${this.dataUrl}"></a>
             <rbn-button
                 buttonRole="primary"
-                title="Download current pattern as image file"
+                title="Download current pattern to image file"
                 @click=${this.download}>
-                Download
+                <rbn-icon icon="${Icon.Download}"></rbn-icon>
             </rbn-button>
         `
     }

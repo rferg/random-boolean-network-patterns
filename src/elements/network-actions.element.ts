@@ -1,5 +1,6 @@
 import { css, html, property } from 'lit-element'
 import { BaseElement } from './base.element'
+import { Icon } from './icon'
 
 export class NetworkActionsElement extends BaseElement {
     static get is () { return 'rbn-network-actions' }
@@ -28,12 +29,14 @@ export class NetworkActionsElement extends BaseElement {
         return html`
             <rbn-button title="Generate a new random network"
                 @click=${this.handleGenerateClick}>
-                Generate New
+                <rbn-icon icon="${Icon.Refresh}"></rbn-icon>
             </rbn-button>
             <rbn-button title="${this.isRunning ? 'Pause' : 'Resume'}"
                 buttonRole="${this.isRunning ? 'danger' : 'success'}"
                 @click=${this.handlePlayPauseClick}>
-                ${this.isRunning ? 'Pause' : 'Resume'}
+                ${this.isRunning
+        ? html`<rbn-icon icon="${Icon.Pause}"></rbn-icon>`
+        : html`<rbn-icon icon="${Icon.Play}"></rbn-icon>`}
             </rbn-button>
         `
     }
