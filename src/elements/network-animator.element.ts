@@ -2,6 +2,7 @@ import { css, property } from 'lit-element'
 import { Colors, getRandomColor, getRandomInteger, NetworkInputProperties } from '../common'
 import { networkServiceFactory, NetworkService } from '../network'
 import { BaseElement } from './base.element'
+import { CanvasDataUrlFetcherEvent } from './canvas-data-url-fetcher.event'
 
 export class NetworkAnimatorElement extends BaseElement {
     static get is () { return 'rbn-network-animator' }
@@ -87,6 +88,10 @@ export class NetworkAnimatorElement extends BaseElement {
         this.hasStarted = true
 
         window.addEventListener('resize', this.handleWindowResize)
+
+        this.dispatchEvent(new CanvasDataUrlFetcherEvent(
+            () => this.canvas?.toDataURL() ?? ''
+        ))
     }
 
     disconnectedCallback () {
@@ -109,6 +114,7 @@ export class NetworkAnimatorElement extends BaseElement {
     }
 
     private setCanvasToWindowSize () {
+        console.log('resize event')
         if (this.canvas) {
             this.canvas.height = window.innerHeight
             this.canvas.width = window.innerWidth

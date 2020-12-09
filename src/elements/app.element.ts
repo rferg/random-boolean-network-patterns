@@ -1,6 +1,7 @@
-import { css, html, property } from 'lit-element'
+import { css, html, internalProperty, property } from 'lit-element'
 import { Colors, getRandomColor, NetworkInputProperties } from '../common'
 import { BaseElement } from './base.element'
+import { CanvasDataUrlFetcherEvent } from './canvas-data-url-fetcher.event'
 import { ColorsChangeEvent } from './colors-change.event'
 import { NetworkFormSubmitEvent } from './network-form-submit.event'
 
@@ -67,6 +68,9 @@ export class AppElement extends BaseElement {
     @property({ attribute: false })
     isRunning = true
 
+    @internalProperty()
+    private canvasDataUrlFetcher?: () => string
+
     render () {
         return html`
             <div id="focusTarget" tabindex="0">
@@ -76,6 +80,8 @@ export class AppElement extends BaseElement {
                         .colors=${this.colors}
                         @network-form-submit=${this.onFormSubmit}
                         @colors-change=${this.onColorsChange}></rbn-network-form>
+                    <rbn-canvas-image-downloader .canvasDataUrlFetcher=${this.canvasDataUrlFetcher}>
+                    </rbn-canvas-image-downloader>
                     <rbn-network-actions
                         .isRunning=${this.isRunning}
                         @generate-network=${this.generateNewNetwork}
@@ -85,7 +91,8 @@ export class AppElement extends BaseElement {
             <rbn-network-animator
                 .isRunning=${this.isRunning}
                 .colors=${this.colors}
-                .networkProperties=${this.networkProperties}>
+                .networkProperties=${this.networkProperties}
+                @canvas-data-url-fetcher=${this.handleCanvasDataUrlFetcher}>
             </rbn-network-animator>
             `
     }
@@ -108,5 +115,9 @@ export class AppElement extends BaseElement {
 
     private handleRunningChange ({ detail: isRunning }: CustomEvent<boolean>) {
         this.isRunning = isRunning
+    }
+
+    private handleCanvasDataUrlFetcher ({ fetcher }: CanvasDataUrlFetcherEvent) {
+        this.canvasDataUrlFetcher = fetcher
     }
 }

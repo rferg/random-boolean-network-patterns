@@ -1,5 +1,6 @@
 import { AppElement } from './app.element'
 import { ButtonElement } from './button.element'
+import { CanvasImageDownloaderElement } from './canvas-image-downloader.element'
 import { ContainerElement } from './container.element'
 import { NetworkActionsElement } from './network-actions.element'
 import { NetworkAnimatorElement } from './network-animator.element'
@@ -19,6 +20,7 @@ export function getElements (): {
         { name: ContainerElement.is, constructor: ContainerElement },
         { name: ButtonElement.is, constructor: ButtonElement },
         { name: NetworkFormElement.is, constructor: NetworkFormElement },
-        { name: NetworkActionsElement.is, constructor: NetworkActionsElement }
+        { name: NetworkActionsElement.is, constructor: NetworkActionsElement },
+        { name: CanvasImageDownloaderElement.is, constructor: CanvasImageDownloaderElement }
     ]
 }
