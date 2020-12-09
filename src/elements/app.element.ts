@@ -3,7 +3,10 @@ import { Color, Colors, getRandomColor, NetworkInputProperties } from '../common
 import { BaseElement } from './base.element'
 import { CanvasDataUrlFetcherEvent } from './canvas-data-url-fetcher.event'
 import { ColorsChangeEvent } from './colors-change.event'
+import { linkStyles } from './link.styles'
 import { NetworkFormSubmitEvent } from './network-form-submit.event'
+
+import githubLogo from '../../assets/github.png'
 
 export class AppElement extends BaseElement {
     static get is () { return 'rbn-app' }
@@ -11,6 +14,7 @@ export class AppElement extends BaseElement {
     static get styles () {
         return [
             super.styles,
+            linkStyles,
             css`
                 :host {
                     display: block;
@@ -32,7 +36,7 @@ export class AppElement extends BaseElement {
                     border: 0;
                     box-shadow: none;
                 }
-                #focusTarget rbn-container {
+                #focusTarget rbn-container, #focusTarget rbn-container[hidden] {
                     border-radius: 0;
                     position: fixed;
                     top: 0;
@@ -53,14 +57,30 @@ export class AppElement extends BaseElement {
                     margin-bottom: 1rem;
                 }
 
-                .actions-container {
+                .actions-container, .info-button-container {
                     display: flex;
                     flex-flow: row wrap;
                     align-items: center;
                     justify-content: center;
                 }
+                .info-button-container {
+                    width: 100%;
+                    justify-content: flex-end;
+                }
+                .info-button-container #githubLink {
+                    display: flex;
+                    margin-left: 1rem;
+                }
                 rbn-canvas-image-downloader {
                     margin: 0.5rem;
+                }
+                *[hidden] {
+                    display: none;
+                }
+                rbn-info {
+                    max-height: 80vh;
+                    overflow-y: auto;
+                    max-width: 800px;
                 }
             `
         ]
@@ -81,6 +101,9 @@ export class AppElement extends BaseElement {
     @internalProperty()
     private canvasDataUrlFetcher?: () => string
 
+    @internalProperty()
+    private showInfo = false
+
     connectedCallback () {
         super.connectedCallback()
         this.changeBodyBackgroundColor(this.colors.off)
@@ -90,12 +113,23 @@ export class AppElement extends BaseElement {
         return html`
             <div id="focusTarget" tabindex="0">
                 <rbn-container>
-                    <rbn-network-form
+                    <div class="info-button-container">
+                        <button @click=${this.handleMoreInfoClick}>
+                            ${this.showInfo ? 'Back' : 'What is this?'}</button>
+                        <a  id="githubLink"
+                            href="https://github.com/rferg/random-boolean-network-patterns"
+                            target="_blank">
+                            <img src="${githubLogo}"
+                                alt="GitHub logo"
+                                title="GitHub page for this site" />
+                        </a>
+                    </div>
+                    <rbn-network-form ?hidden=${this.showInfo}
                         .networkProperties=${this.networkProperties}
                         .colors=${this.colors}
                         @network-form-submit=${this.onFormSubmit}
                         @colors-change=${this.onColorsChange}></rbn-network-form>
-                    <div class="actions-container">                            
+                    <div class="actions-container" ?hidden=${this.showInfo}>                            
                         <rbn-canvas-image-downloader .canvasDataUrlFetcher=${this.canvasDataUrlFetcher}>
                         </rbn-canvas-image-downloader>
                         <rbn-network-actions
@@ -103,6 +137,7 @@ export class AppElement extends BaseElement {
                             @generate-network=${this.generateNewNetwork}
                             @running-change=${this.handleRunningChange}></rbn-network-actions>
                     </div>
+                    <rbn-info ?hidden=${!this.showInfo}></rbn-info>
                 </rbn-container>
             </div>
             <rbn-network-animator
@@ -143,5 +178,9 @@ export class AppElement extends BaseElement {
         document.documentElement.style.setProperty(
             '--body-background-color',
             `rgb(${red},${green},${blue})`)
+    }
+
+    private handleMoreInfoClick () {
+        this.showInfo = !this.showInfo
     }
 }
