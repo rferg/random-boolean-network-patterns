@@ -82,7 +82,8 @@ export class NetworkAnimatorElement extends BaseElement {
     connectedCallback () {
         this.canvas = document.createElement('canvas')
         this.shadowRoot?.appendChild(this.canvas)
-        this.setCanvasToWindowSize()
+        this.canvas.width = window.innerWidth
+        this.canvas.height = window.innerHeight
         this.service = networkServiceFactory(this.canvas, getRandomInteger)
         this.updateNetwork()
         this.hasStarted = true
@@ -113,15 +114,7 @@ export class NetworkAnimatorElement extends BaseElement {
         }
     }
 
-    private setCanvasToWindowSize () {
-        console.log('resize event')
-        if (this.canvas) {
-            this.canvas.height = window.innerHeight
-            this.canvas.width = window.innerWidth
-        }
-    }
-
     private handleWindowResize () {
-        this.setCanvasToWindowSize()
+        this.service?.resizeCanvas(window.innerWidth, window.innerHeight)
     }
 }

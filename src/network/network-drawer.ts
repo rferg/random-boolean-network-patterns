@@ -50,6 +50,13 @@ export class NetworkDrawer {
         this.context.putImageData(imageData, startCoordinates.x, startCoordinates.y)
     }
 
+    resizeCanvas (width: number, height: number): void {
+        const currentCanvas = this.context.getImageData(0, 0, this.canvas.width, this.canvas.height)
+        this.canvas.width = width
+        this.canvas.height = height
+        this.context.putImageData(currentCanvas, 0, 0)
+    }
+
     private getPixelCoordinates (pixelIndex: number, imageDataWidth: number): { x: number, y: number} {
         const x = pixelIndex % imageDataWidth
         const y = Math.floor(pixelIndex / imageDataWidth)

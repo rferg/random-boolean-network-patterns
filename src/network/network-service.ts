@@ -87,6 +87,10 @@ export class NetworkService {
         }
     }
 
+    resizeCanvas (width: number, height: number): void {
+        this.drawer.resizeCanvas(width, height)
+    }
+
     private drawNetwork (
         network: Network,
         drawer: NetworkDrawer,
