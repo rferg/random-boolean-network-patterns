@@ -1,5 +1,5 @@
 import { css, html, internalProperty, property } from 'lit-element'
-import { Colors, getRandomColor, NetworkInputProperties } from '../common'
+import { Color, Colors, getRandomColor, NetworkInputProperties } from '../common'
 import { BaseElement } from './base.element'
 import { CanvasDataUrlFetcherEvent } from './canvas-data-url-fetcher.event'
 import { ColorsChangeEvent } from './colors-change.event'
@@ -81,6 +81,11 @@ export class AppElement extends BaseElement {
     @internalProperty()
     private canvasDataUrlFetcher?: () => string
 
+    connectedCallback () {
+        super.connectedCallback()
+        this.changeBodyBackgroundColor(this.colors.off)
+    }
+
     render () {
         return html`
             <div id="focusTarget" tabindex="0">
@@ -118,6 +123,7 @@ export class AppElement extends BaseElement {
 
     private onColorsChange ({ colors }: ColorsChangeEvent) {
         this.colors = colors
+        this.changeBodyBackgroundColor(this.colors.off)
     }
 
     private generateNewNetwork () {
@@ -131,5 +137,11 @@ export class AppElement extends BaseElement {
 
     private handleCanvasDataUrlFetcher ({ fetcher }: CanvasDataUrlFetcherEvent) {
         this.canvasDataUrlFetcher = fetcher
+    }
+
+    private changeBodyBackgroundColor ({ red, green, blue }: Color) {
+        document.documentElement.style.setProperty(
+            '--body-background-color',
+            `rgb(${red},${green},${blue})`)
     }
 }
