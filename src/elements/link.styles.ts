@@ -14,6 +14,6 @@ export const linkStyles = css`
         font-size: var(--font-size);
     }
     a:hover, a:focus, button:hover, button:focus, a:visited, a:active {
-        color: var(--primary-color);
+        color: var(--medium-primary-color);
     }
 `

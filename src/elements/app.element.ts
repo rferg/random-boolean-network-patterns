@@ -59,7 +59,6 @@ export class AppElement extends BaseElement {
                     width: 100%;
                     margin-bottom: 1rem;
                 }
-
                 .actions-container, .info-button-container {
                     display: flex;
                     flex-flow: row wrap;
@@ -119,7 +118,8 @@ export class AppElement extends BaseElement {
                             ${this.showInfo ? 'Back' : 'What is this?'}</button>
                         <a  id="githubLink"
                             href="https://github.com/rferg/random-boolean-network-patterns"
-                            target="_blank">
+                            target="_blank"
+                            rel="noopener">
                             <img src="${githubLogo}"
                                 alt="GitHub logo"
                                 title="GitHub page for this site" />

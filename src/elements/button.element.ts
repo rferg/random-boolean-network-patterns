@@ -53,11 +53,15 @@ export class ButtonElement extends BaseElement {
     @property({ type: Boolean })
     disabled = false
 
+    @property({ type: String })
+    title = ''
+
     render () {
         return html`
             <button type="button"
                 @click=${this.handleClick}
-                ?disabled=${this.disabled}>
+                ?disabled=${this.disabled}
+                title=${this.title}>
                 <slot></slot>
             </button>
         `
