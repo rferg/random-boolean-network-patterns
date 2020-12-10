@@ -73,6 +73,10 @@ export class AppElement extends BaseElement {
                     display: flex;
                     margin-left: 1rem;
                 }
+                .info-button-container #githubLink img {
+                    height: 32px;
+                    width: 32px;
+                }
                 rbn-canvas-image-downloader {
                     margin: 0.5rem;
                 }
