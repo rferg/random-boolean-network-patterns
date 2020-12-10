@@ -24,7 +24,7 @@ export class AppElement extends BaseElement {
                     position: fixed;
                     top: 0;
                     left: 0;
-                    min-height: 33vh;
+                    min-height: 50vh;
                     width: 100%;
                     background-color: transparent;
                     z-index: 1;
@@ -37,6 +37,8 @@ export class AppElement extends BaseElement {
                     box-shadow: none;
                 }
                 #focusTarget rbn-container, #focusTarget rbn-container[hidden] {
+                    max-height: 100vh;
+                    overflow-y: auto;
                     border-radius: 0;
                     position: fixed;
                     top: 0;
@@ -45,6 +47,7 @@ export class AppElement extends BaseElement {
                     width: 100%;
                     box-shadow: var(--box-shadow);
                     align-items: center;
+                    justify-content: flex-start;
                     transform: translateY(-105%);
                     transition: transform var(--animation-duration) var(--easing) var(--animation-duration);
                 }
@@ -78,8 +81,6 @@ export class AppElement extends BaseElement {
                     display: none;
                 }
                 rbn-info {
-                    max-height: 80vh;
-                    overflow-y: auto;
                     max-width: 800px;
                 }
             `

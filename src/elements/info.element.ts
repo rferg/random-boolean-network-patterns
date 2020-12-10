@@ -22,10 +22,8 @@ export class InfoElement extends BaseElement {
         return html`
             <h1>Visual Patterns with Random Boolean Networks</h1>
             <p>
-                Each of the squares on the screen represents the value of a node in a 
-                <a href="https://en.wikipedia.org/wiki/Boolean_network" target="_blank">
-                    Boolean network
-                </a> at a given time point.
+                Each of the squares represents the value of a node in a 
+                <a href="https://en.wikipedia.org/wiki/Boolean_network" target="_blank">Boolean network</a> at a given time point.
             </p>
             <p>The Boolean functions for each node are randomly assigned, as are its input nodes.</p>
         `
