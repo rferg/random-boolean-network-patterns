@@ -21,6 +21,14 @@ export class ButtonElement extends BaseElement {
                     opacity: 0.5;
                     cursor: not-allowed;
                 }
+                :host([size="small"]) button {
+                    padding: calc(var(--padding) / 4);
+                    font-size: calc(var(--font-size) / 4);
+                }
+                :host([size="large"]) button {
+                    padding: calc(var(--padding) * 2);
+                    font-size: calc(var(--font-size) * 2);
+                }
                 button {
                     display: block;
                     text-align: center;
@@ -52,6 +60,9 @@ export class ButtonElement extends BaseElement {
 
     @property({ type: Boolean })
     disabled = false
+
+    @property({ type: String })
+    size: 'large' | 'normal' | 'small' = 'normal'
 
     @property({ type: String })
     title = ''
