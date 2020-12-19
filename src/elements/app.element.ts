@@ -7,6 +7,7 @@ import { linkStyles } from './link.styles'
 import { NetworkFormSubmitEvent } from './network-form-submit.event'
 
 import githubLogo from '../../assets/github.png'
+import { Icon } from './icon'
 
 export class AppElement extends BaseElement {
     static get is () { return 'rbn-app' }
@@ -20,23 +21,7 @@ export class AppElement extends BaseElement {
                     display: block;
                     min-height: 100vh;
                 }
-                #focusTarget {
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    min-height: 50vh;
-                    width: 100%;
-                    background-color: transparent;
-                    z-index: 1;
-                    outline: 0;
-                    border: 0;
-                }
-                #focusTarget:focus {
-                    outline: 0;
-                    border: 0;
-                    box-shadow: none;
-                }
-                #focusTarget rbn-container, #focusTarget rbn-container[hidden] {
+                rbn-container {
                     max-height: 100vh;
                     overflow-y: auto;
                     border-radius: 0;
@@ -48,32 +33,49 @@ export class AppElement extends BaseElement {
                     box-shadow: var(--box-shadow);
                     align-items: center;
                     justify-content: flex-start;
-                    transform: translateY(-105%);
-                    transition: transform var(--animation-duration) var(--easing) var(--animation-duration);
-                }
-                #focusTarget:hover rbn-container,
-                #focusTarget:focus-within rbn-container {
                     transform: translateY(0);
+                    transition: transform var(--animation-duration) var(--easing);
+                }
+                rbn-container[hidden] {
+                    display: flex;
+                    transform: translateY(-105%);
+                }
+                rbn-container.options-button-container {
+                    width: auto;
+                    border-bottom-left-radius: var(--border-radius);
+                    opacity: 0.5;
+                    right: 0;
+                    left: auto;
+                    padding: calc(var(--padding) / 2);
+                }
+                rbn-container.options-button-container:hover {
+                    opacity: 1;
                 }
                 rbn-network-form {
                     width: 100%;
                     margin-bottom: 1rem;
                 }
-                .actions-container, .info-button-container {
+                .actions-container, .top-buttons-container {
                     display: flex;
                     flex-flow: row wrap;
                     align-items: center;
                     justify-content: center;
                 }
-                .info-button-container {
-                    width: 100%;
-                    justify-content: flex-end;
+                .buttons-group {
+                    display: flex;
+                    flex-flow: row nowrap;
+                    justify-content: center;
+                    align-items: center;
                 }
-                .info-button-container #githubLink {
+                .top-buttons-container {
+                    width: 100%;
+                    justify-content: space-between;
+                }
+                .top-buttons-container #githubLink {
                     display: flex;
                     margin-left: 1rem;
                 }
-                .info-button-container #githubLink img {
+                .top-buttons-container #githubLink img {
                     height: 32px;
                     width: 32px;
                 }
@@ -108,6 +110,9 @@ export class AppElement extends BaseElement {
     @internalProperty()
     private showInfo = false
 
+    @internalProperty()
+    private showForm = false
+
     connectedCallback () {
         super.connectedCallback()
         this.changeBodyBackgroundColor(this.colors.off)
@@ -115,9 +120,17 @@ export class AppElement extends BaseElement {
 
     render () {
         return html`
-            <div id="focusTarget" tabindex="0">
-                <rbn-container>
-                    <div class="info-button-container">
+            <rbn-container class="options-button-container" ?hidden=${this.showForm}>
+                <rbn-button
+                    title="Show Options"
+                    size="small"
+                    @click=${() => { this.showForm = true }}>
+                    <rbn-icon size="small" icon=${Icon.Menu}></rbn-icon>
+                </rbn-button>
+            </rbn-container>
+            <rbn-container ?hidden=${!this.showForm}>
+                <div class="top-buttons-container">
+                    <div class="buttons-group">
                         <button @click=${this.handleMoreInfoClick}>
                             ${this.showInfo ? 'Back' : 'What is this?'}</button>
                         <a  id="githubLink"
@@ -129,22 +142,30 @@ export class AppElement extends BaseElement {
                                 title="GitHub page for this site" />
                         </a>
                     </div>
-                    <rbn-network-form ?hidden=${this.showInfo}
-                        .networkProperties=${this.networkProperties}
-                        .colors=${this.colors}
-                        @network-form-submit=${this.onFormSubmit}
-                        @colors-change=${this.onColorsChange}></rbn-network-form>
-                    <div class="actions-container" ?hidden=${this.showInfo}>                            
-                        <rbn-canvas-image-downloader .canvasDataUrlFetcher=${this.canvasDataUrlFetcher}>
-                        </rbn-canvas-image-downloader>
-                        <rbn-network-actions
-                            .isRunning=${this.isRunning}
-                            @generate-network=${this.generateNewNetwork}
-                            @running-change=${this.handleRunningChange}></rbn-network-actions>
+                    <div class="buttons-group">
+                        <rbn-button @click=${() => { this.showForm = false }}
+                            title="Close Options"
+                            size="small"
+                            buttonRole="danger">
+                            <rbn-icon size="small" icon=${Icon.X}></rbn-icon>
+                        </rbn-button>
                     </div>
-                    <rbn-info ?hidden=${!this.showInfo}></rbn-info>
-                </rbn-container>
-            </div>
+                </div>
+                <rbn-network-form ?hidden=${this.showInfo}
+                    .networkProperties=${this.networkProperties}
+                    .colors=${this.colors}
+                    @network-form-submit=${this.onFormSubmit}
+                    @colors-change=${this.onColorsChange}></rbn-network-form>
+                <div class="actions-container" ?hidden=${this.showInfo}>                            
+                    <rbn-canvas-image-downloader .canvasDataUrlFetcher=${this.canvasDataUrlFetcher}>
+                    </rbn-canvas-image-downloader>
+                    <rbn-network-actions
+                        .isRunning=${this.isRunning}
+                        @generate-network=${this.generateNewNetwork}
+                        @running-change=${this.handleRunningChange}></rbn-network-actions>
+                </div>
+                <rbn-info ?hidden=${!this.showInfo}></rbn-info>
+            </rbn-container>
             <rbn-network-animator
                 .isRunning=${this.isRunning}
                 .colors=${this.colors}

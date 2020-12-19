@@ -3,5 +3,7 @@ export enum Icon {
     Refresh = 'refresh',
     Play = 'play',
     Pause = 'pause',
-    Download = 'download'
+    Download = 'download',
+    Menu = 'menu',
+    X = 'x'
 }

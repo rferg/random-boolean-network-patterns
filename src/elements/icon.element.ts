@@ -14,12 +14,18 @@ export class IconElement extends BaseElement {
                     stroke: var(--white);
                     fill: var(--white);
                 }
+                :host([size="small"]) svg {
+                    height: var(--font-size);
+                }
             `
         ]
     }
 
     @property({ type: String })
     icon?: Icon
+
+    @property({ type: String, attribute: true })
+    size: 'small' | 'normal' = 'normal'
 
     render () {
         return this.getIconTemplate(this.icon)
@@ -54,6 +60,20 @@ export class IconElement extends BaseElement {
             return svg`
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 22"><
                     <path d="M18 11L.75 21.3923V.607696L18 11z"/>
+                </svg>
+            `
+        case Icon.Menu:
+            return svg`
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21 21">
+                    <g fill="none">
+                        <path d="M4.5 7.5h12M4.498 10.5h11.997M4.5 13.5h11.995"/>
+                    </g>
+                </svg>
+            `
+        case Icon.X:
+            return svg`
+                <svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+                    <path d="M2.35355 1.64645L14.3989 13.6918M1.64645 13.6918L13.6918 1.64645"/>
                 </svg>
             `
         default:
